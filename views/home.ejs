@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Biblioteca</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <main class="login-main">
+            <div class="hero">
+                <h2>📚 Sistema de Biblioteca</h2>
+                <p>Inicia sesión para continuar</p>
+                
+                <% if (error) { %>
+                    <div class="alert-error">
+                        ❌ <%= error %>
+                    </div>
+                <% } %>
+                
+                <form action="/login" method="POST" class="form-contenedor">
+                    <div class="form-group">
+                        <label>👤 Usuario</label>
+                        <input type="text" name="username" placeholder="Ingresa tu usuario" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>🔒 Contraseña</label>
+                        <input type="password" name="password" placeholder="Ingresa tu contraseña" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-login">
+                        Iniciar Sesión
+                    </button>
+                </form>
+                
+                <div class="card login-info">
+                    <h3>👥 Usuarios de prueba</h3>
+                    <div class="usuarios-lista">
+                        <div class="usuario-item">
+                            <strong>Admin:</strong> 
+                            <code>admin</code> / 
+                            <code>admin123</code>
+                        </div>
+                        <div class="usuario-item">
+                            <strong>Usuario:</strong> 
+                            <code>usuario</code> / 
+                            <code>user123</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Sistema de Biblioteca © 2024</p>
+        </footer>
+    </div>
+</body>
+</html>

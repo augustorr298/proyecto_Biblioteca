@@ -1,0 +1,50 @@
+<%- include('../Parcial/header') %>
+
+<div class="page-header">
+  <h2>📋 Registro de Préstamos</h2>
+  <a href="/prestamos/nuevo" class="btn">+ Nuevo Préstamo</a>
+</div>
+
+<% if (prestamos.length === 0) { %>
+  <p class="empty-message">No hay préstamos registrados.</p>
+<% } else { %>
+  <div class="tabla-contenedor">
+    <table>
+      <thead>
+        <tr>
+          <th>Libro</th>
+          <th>Usuario</th>
+          <th>Fecha Préstamo</th>
+          <th>Fecha Devolución</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% prestamos.forEach(prestamo => { %>
+        <tr>
+          <td><strong><%= prestamo.libroId ? prestamo.libroId.titulo : 'Libro eliminado' %></strong></td>
+          <td><%= prestamo.nombreUsuario %></td>
+          <td><%= new Date(prestamo.fechaPrestamo).toLocaleDateString() %></td>
+          <td><%= new Date(prestamo.fechaDevolucion).toLocaleDateString() %></td>
+          <td>
+            <% if (prestamo.devuelto) { %>
+              <span class="badge devuelto">Devuelto</span>
+            <% } else { %>
+              <span class="badge prestado">Pendiente</span>
+            <% } %>
+          </td>
+          <td>
+            <a href="/prestamos/<%= prestamo._id %>/editar" class="btn-small">Editar</a>
+            <form action="/prestamos/<%= prestamo._id %>?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn-small btn-danger" onclick="return confirm('¿Eliminar este préstamo?')">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../Parcial/footer') %>

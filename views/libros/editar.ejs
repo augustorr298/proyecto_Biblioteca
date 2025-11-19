@@ -1,0 +1,47 @@
+<%- include('../Parcial/header') %>
+
+<div class="page-header">
+  <h2>✏️ Editar Libro</h2>
+</div>
+
+<div class="form-contenedor">
+  <form action="/libros/<%= libro._id %>?_method=PUT" method="POST">
+    <div class="form-group">
+      <label>Título:</label>
+      <input type="text" name="titulo" value="<%= libro.titulo %>" required>
+    </div>
+
+    <div class="form-group">
+      <label>Autor:</label>
+      <input type="text" name="autor" value="<%= libro.autor %>" required>
+    </div>
+
+    <div class="form-group">
+      <label>Género:</label>
+      <select name="genero" required>
+        <option value="Ficción" <%= libro.genero === 'Ficción' ? 'selected' : '' %>>Ficción</option>
+        <option value="No ficción" <%= libro.genero === 'No ficción' ? 'selected' : '' %>>No ficción</option>
+        <option value="Ciencia ficción" <%= libro.genero === 'Ciencia ficción' ? 'selected' : '' %>>Ciencia ficción</option>
+        <option value="Fantasía" <%= libro.genero === 'Fantasía' ? 'selected' : '' %>>Fantasía</option>
+        <option value="Misterio" <%= libro.genero === 'Misterio' ? 'selected' : '' %>>Misterio</option>
+        <option value="Romance" <%= libro.genero === 'Romance' ? 'selected' : '' %>>Romance</option>
+        <option value="Terror" <%= libro.genero === 'Terror' ? 'selected' : '' %>>Terror</option>
+        <option value="Biografía" <%= libro.genero === 'Biografía' ? 'selected' : '' %>>Biografía</option>
+        <option value="Historia" <%= libro.genero === 'Historia' ? 'selected' : '' %>>Historia</option>
+        <option value="Otro" <%= libro.genero === 'Otro' ? 'selected' : '' %>>Otro</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Año:</label>
+      <input type="number" name="anio" value="<%= libro.anio %>" required min="1000" max="2025">
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn">Guardar Cambios</button>
+      <a href="/libros" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+<%- include('../Parcial/footer') %>

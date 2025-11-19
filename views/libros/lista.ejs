@@ -1,0 +1,50 @@
+<%- include('../Parcial/header') %>
+
+<div class="page-header">
+  <h2>📚 Catálogo de Libros</h2>
+  <a href="/libros/nuevo" class="btn">+ Agregar Libro</a>
+</div>
+
+<% if (libros.length === 0) { %>
+  <p class="empty-message">No hay libros registrados. ¡Agrega uno!</p>
+<% } else { %>
+  <div class="tabla-contenedor">
+    <table>
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Género</th>
+          <th>Año</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% libros.forEach(libro => { %>
+        <tr>
+          <td><strong><%= libro.titulo %></strong></td>
+          <td><%= libro.autor %></td>
+          <td><%= libro.genero %></td>
+          <td><%= libro.anio %></td>
+          <td>
+            <% if (libro.disponible) { %>
+              <span class="badge disponible">Disponible</span>
+            <% } else { %>
+              <span class="badge prestado">Prestado</span>
+            <% } %>
+          </td>
+          <td>
+            <a href="/libros/<%= libro._id %>/editar" class="btn-small">Editar</a>
+            <form action="/libros/<%= libro._id %>?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn-small btn-danger" onclick="return confirm('¿Eliminar este libro?')">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
+
+<%- include('../Parcial/footer') %>

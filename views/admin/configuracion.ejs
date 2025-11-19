@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Configuración</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Sistema de Biblioteca</h1>
+            <nav>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/libros">Libros</a>
+                <a href="/prestamos">Préstamos</a>
+                <a href="/admin/usuarios">Usuarios</a>
+                <a href="/admin/reportes">Reportes</a>
+                <a href="/logout">Cerrar Sesión</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="page-header">
+                <h2>Configuración del Sistema</h2>
+                <div>
+                    <span class="badge disponible">Admin: <%= usuario.username %></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <form action="/admin/configuracion" method="POST">
+                    <div class="form-group">
+                        <label>Días máximos de préstamo:</label>
+                        <input type="number" name="diasMaxPrestamo" value="<%= diasMaxPrestamo %>" min="1" max="90" required>
+                        <small>Número de días que un libro puede estar prestado</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn">Guardar Configuración</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <footer>
+            <p>Sistema de Biblioteca © 2024</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<%- include('Parcial/header') %>
+
+<div class="hero">
+  <h2>Bienvenido al Sistema de Biblioteca</h2>
+  <p>Gestiona libros y préstamos de manera fácil y rápida</p>
+  
+  <div class="opciones">
+    <div class="card">
+      <h3>📖 Libros</h3>
+      <p>Administra el catálogo de libros</p>
+      <a href="/libros" class="btn">Ver Libros</a>
+      <a href="/libros/nuevo" class="btn btn-secondary">Agregar Libro</a>
+    </div>
+    
+    <div class="card">
+      <h3>📋 Préstamos</h3>
+      <p>Gestiona los préstamos de libros</p>
+      <a href="/prestamos" class="btn">Ver Préstamos</a>
+      <a href="/prestamos/nuevo" class="btn btn-secondary">Nuevo Préstamo</a>
+    </div>
+
+    <% if (usuario.role === 'administrador') { %>
+    <div class="card" style="border: 2px solid #dc2626;">
+      <h3>⚙️ Administración</h3>
+      <p style="color: #dc2626; font-weight: bold;">Panel Exclusivo</p>
+      <a href="/admin/usuarios" class="btn">Usuarios</a>
+      <a href="/admin/reportes" class="btn btn-secondary">Reportes</a>
+      <a href="/admin/configuracion" class="btn btn-secondary">Configuración</a>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 20px; text-align: center;">
+  <p>
+    Sesión activa: <strong><%= usuario.username %></strong> 
+    <span class="badge <%= usuario.role === 'administrador' ? 'disponible' : 'prestado' %>">
+      <%= usuario.role %>
+    </span>
+  </p>
+  <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
+</div>
+
+<%- include('Parcial/footer') %>

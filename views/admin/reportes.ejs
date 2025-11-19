@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Reportes</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Sistema de Biblioteca</h1>
+            <nav>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/libros">Libros</a>
+                <a href="/prestamos">Préstamos</a>
+                <a href="/admin/usuarios">Usuarios</a>
+                <a href="/admin/reportes">Reportes</a>
+                <a href="/logout">Cerrar Sesión</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="page-header">
+                <h2>Reportes del Sistema</h2>
+                <div>
+                    <span class="badge disponible">Admin: <%= usuario.username %></span>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total de libros</td>
+                        <td><%= stats.totalLibros %></td>
+                    </tr>
+                    <tr>
+                        <td>Libros disponibles</td>
+                        <td><%= stats.librosDisponibles %></td>
+                    </tr>
+                    <tr>
+                        <td>Libros prestados</td>
+                        <td><%= stats.totalLibros - stats.librosDisponibles %></td>
+                    </tr>
+                    <tr>
+                        <td>Préstamos activos</td>
+                        <td><%= stats.prestamosActivos %></td>
+                    </tr>
+                    <tr>
+                        <td>Total de préstamos</td>
+                        <td><%= stats.totalPrestamos %></td>
+                    </tr>
+                    <tr>
+                        <td>Usuarios totales</td>
+                        <td><%= stats.totalUsuarios %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+        <footer>
+            <p>Sistema de Biblioteca © 2024</p>
+        </footer>
+    </div>
+</body>
+</html>

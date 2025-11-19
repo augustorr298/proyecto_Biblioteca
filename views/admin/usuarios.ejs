@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Usuarios</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Sistema de Biblioteca</h1>
+            <nav>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/libros">Libros</a>
+                <a href="/prestamos">Préstamos</a>
+                <a href="/admin/usuarios">Usuarios</a>
+                <a href="/admin/reportes">Reportes</a>
+                <a href="/logout">Cerrar Sesión</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="page-header">
+                <h2>Gestión de Usuarios</h2>
+                <div>
+                    <span class="badge disponible">Admin: <%= usuario.username %></span>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>admin</td>
+                        <td>Administrador</td>
+                        <td>
+                            <button class="btn-small">Editar</button>
+                            <button class="btn-small btn-danger">Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>usuario</td>
+                        <td>Normal</td>
+                        <td>
+                            <button class="btn-small">Editar</button>
+                            <button class="btn-small btn-danger">Eliminar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+
+        <footer>
+            <p>Sistema de Biblioteca © 2024</p>
+        </footer>
+    </div>
+</body>
+</html>
