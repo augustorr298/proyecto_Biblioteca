@@ -6,6 +6,11 @@ const prestamoSchema = new mongoose.Schema({
     ref: 'Libro',
     required: true
   },
+  usuarioId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Usuario',
+    required: true
+  },
   nombreUsuario: {
     type: String,
     required: true
@@ -21,6 +26,10 @@ const prestamoSchema = new mongoose.Schema({
   devuelto: {
     type: Boolean,
     default: false
+  },
+  fechaDevolucionReal: {
+    type: Date,
+    default: null
   }
 });
 

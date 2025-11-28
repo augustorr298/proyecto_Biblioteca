@@ -1,12 +1,20 @@
 <%- include('../Parcial/header') %>
 
 <div class="page-header">
-  <h2>📋 Registro de Préstamos</h2>
-  <a href="/prestamos/nuevo" class="btn">+ Nuevo Préstamo</a>
+  <h2>📋 <%= usuario.role === 'administrador' ? 'Todos los Préstamos' : 'Mis Préstamos' %></h2>
+  <% if (usuario && usuario.role === 'administrador') { %>
+    <a href="/prestamos/nuevo" class="btn">+ Nuevo Préstamo</a>
+  <% } %>
 </div>
 
 <% if (prestamos.length === 0) { %>
-  <p class="empty-message">No hay préstamos registrados.</p>
+  <p class="empty-message">
+    <% if (usuario.role === 'administrador') { %>
+      No hay préstamos registrados.
+    <% } else { %>
+      No tienes préstamos registrados.
+    <% } %>
+  </p>
 <% } else { %>
   <div class="tabla-contenedor">
     <table>
@@ -17,29 +25,41 @@
           <th>Fecha Préstamo</th>
           <th>Fecha Devolución</th>
           <th>Estado</th>
-          <th>Acciones</th>
+          <% if (usuario && usuario.role === 'administrador') { %>
+            <th>Acciones</th>
+          <% } %>
         </tr>
       </thead>
       <tbody>
         <% prestamos.forEach(prestamo => { %>
-        <tr>
+        <tr class="<%= prestamo.devuelto ? 'fila-devuelto' : '' %>">
           <td><strong><%= prestamo.libroId ? prestamo.libroId.titulo : 'Libro eliminado' %></strong></td>
           <td><%= prestamo.nombreUsuario %></td>
-          <td><%= new Date(prestamo.fechaPrestamo).toLocaleDateString() %></td>
-          <td><%= new Date(prestamo.fechaDevolucion).toLocaleDateString() %></td>
+          <td><%= new Date(prestamo.fechaPrestamo).toLocaleDateString('es-MX') %></td>
+          <td>
+            <%= new Date(prestamo.fechaDevolucion).toLocaleDateString('es-MX') %>
+            <% if (!prestamo.devuelto && new Date(prestamo.fechaDevolucion) < new Date()) { %>
+              <span class="badge vencido">¡Vencido!</span>
+            <% } %>
+          </td>
           <td>
             <% if (prestamo.devuelto) { %>
               <span class="badge devuelto">Devuelto</span>
+              <% if (prestamo.fechaDevolucionReal) { %>
+                <br><small>El <%= new Date(prestamo.fechaDevolucionReal).toLocaleDateString('es-MX') %></small>
+              <% } %>
             <% } else { %>
               <span class="badge prestado">Pendiente</span>
             <% } %>
           </td>
+          <% if (usuario && usuario.role === 'administrador') { %>
           <td>
             <a href="/prestamos/<%= prestamo._id %>/editar" class="btn-small">Editar</a>
             <form action="/prestamos/<%= prestamo._id %>?_method=DELETE" method="POST" style="display: inline;">
               <button type="submit" class="btn-small btn-danger" onclick="return confirm('¿Eliminar este préstamo?')">Eliminar</button>
             </form>
           </td>
+          <% } %>
         </tr>
         <% }); %>
       </tbody>

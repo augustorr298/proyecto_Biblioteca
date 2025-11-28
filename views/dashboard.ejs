@@ -1,22 +1,65 @@
 <%- include('Parcial/header') %>
 
 <div class="hero">
-  <h2>Bienvenido al Sistema de Biblioteca</h2>
-  <p>Gestiona libros y préstamos de manera fácil y rápida</p>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+    <% if (usuario.fotoPerfil) { %>
+      <img src="<%= usuario.fotoPerfil %>" alt="Foto de <%= usuario.username %>" 
+           style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #4f46e5; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+    <% } else { %>
+      <div style="width: 80px; height: 80px; border-radius: 8px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #888; border: 2px dashed #ccc; text-align: center; padding: 5px;">
+        (sin foto de perfil)
+      </div>
+    <% } %>
+    <div>
+      <h2 style="margin: 0;">Bienvenido, <%= usuario.username %>!</h2>
+      <span class="badge <%= usuario.role === 'administrador' ? 'disponible' : 'prestado' %>">
+        <%= usuario.role === 'administrador' ? 'Administrador' : 'Usuario' %>
+      </span>
+    </div>
+  </div>
+  <p>
+    <% if (usuario.role === 'administrador') { %>
+      Panel de Administración - Gestiona libros, préstamos y usuarios
+    <% } else { %>
+      Explora nuestro catálogo de libros y revisa tus préstamos
+    <% } %>
+  </p>
   
   <div class="opciones">
     <div class="card">
       <h3>📖 Libros</h3>
-      <p>Administra el catálogo de libros</p>
+      <p>
+        <% if (usuario.role === 'administrador') { %>
+          Administra el catálogo de libros
+        <% } else { %>
+          Explora los libros disponibles
+        <% } %>
+      </p>
       <a href="/libros" class="btn">Ver Libros</a>
-      <a href="/libros/nuevo" class="btn btn-secondary">Agregar Libro</a>
+      <% if (usuario.role === 'administrador') { %>
+        <a href="/libros/nuevo" class="btn btn-secondary">Agregar Libro</a>
+      <% } %>
     </div>
     
     <div class="card">
       <h3>📋 Préstamos</h3>
-      <p>Gestiona los préstamos de libros</p>
-      <a href="/prestamos" class="btn">Ver Préstamos</a>
-      <a href="/prestamos/nuevo" class="btn btn-secondary">Nuevo Préstamo</a>
+      <p>
+        <% if (usuario.role === 'administrador') { %>
+          Gestiona todos los préstamos
+        <% } else { %>
+          Revisa tus préstamos activos
+        <% } %>
+      </p>
+      <a href="/prestamos" class="btn">
+        <% if (usuario.role === 'administrador') { %>
+          Ver Préstamos
+        <% } else { %>
+          Mis Préstamos
+        <% } %>
+      </a>
+      <% if (usuario.role === 'administrador') { %>
+        <a href="/prestamos/nuevo" class="btn btn-secondary">Nuevo Préstamo</a>
+      <% } %>
     </div>
 
     <% if (usuario.role === 'administrador') { %>
@@ -32,12 +75,6 @@
 </div>
 
 <div class="card" style="margin-top: 20px; text-align: center;">
-  <p>
-    Sesión activa: <strong><%= usuario.username %></strong> 
-    <span class="badge <%= usuario.role === 'administrador' ? 'disponible' : 'prestado' %>">
-      <%= usuario.role %>
-    </span>
-  </p>
   <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
 </div>
 

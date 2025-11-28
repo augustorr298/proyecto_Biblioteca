@@ -12,8 +12,12 @@ const PORT = process.env.PORT || 3001;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/biblioteca';
 
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log('✅ Conectado a MongoDB'))
-  .catch(err => console.error('❌ Error conectando a MongoDB:', err));
+  .then(() => {
+    console.log('Conectado a MongoDB');
+    
+  })
+  .catch(err => console.error('Error conectando a MongoDB:', err));
+
 
 // Configuración
 app.set('view engine', 'ejs');
@@ -27,110 +31,72 @@ app.use(express.static('public'));
 
 // SESIONES
 app.use(session({
-  secret: process.env.SECRET_SESSION || 'secreto_super_seguro',
-  name: 'auth_cookie',
+  secret: process.env.SECRET_SESSION || 'secreto_super_seguro_biblioteca',
+  name: 'biblioteca_session',
   resave: false,
   saveUninitialized: false,
   cookie: { 
     secure: false,
-    maxAge: 30 * 60 * 1000
+    maxAge: 60 * 60 * 1000 // 1 hora
   }
 }));
 
-// USUARIOS
-const usuarios = [
-  { id: 1, username: "admin", password: "admin123", role: "administrador" },
-  { id: 2, username: "usuario", password: "user123", role: "normal" }
-];
+// Middleware para pasar usuario a todas las vistas
+const { pasarUsuario, verificarSesion, verificarAdmin } = require('./middlewares/auth');
+app.use(pasarUsuario);
 
-// MIDDLEWARES DE AUTH
-const verificarSesion = (req, res, next) => {
-  if (req.session.usuario) {
-    next();
-  } else {
-    res.redirect("/");
-  }
-};
+// RUTAS DE AUTENTICACIÓN
+const authRouter = require('./router/routerAuth');
+app.use('/', authRouter);
 
-const verificarAdmin = (req, res, next) => {
-  if (req.session.usuario && req.session.usuario.role === "administrador") {
-    next();
-  } else {
-    res.status(403).send("❌ Acceso denegado: Solo administradores");
-  }
-};
-
-const verificarUsuarioNormal = (req, res, next) => {
-  if (req.session.usuario) {
-    next();
-  } else {
-    res.redirect("/");
-  }
-};
-
-// RUTAS PÚBLICAS
+// Página de inicio
 app.get('/', (req, res) => {
   if (req.session.usuario) {
     return res.redirect('/dashboard');
   }
-  res.render('home', { error: null });
+  res.render('auth/login', { error: null, success: null });
 });
 
-app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  const usuario = usuarios.find(u => u.username === username && u.password === password);
-  
-  if (usuario) {
-    req.session.usuario = { id: usuario.id, username: usuario.username, role: usuario.role };
-    res.redirect('/dashboard');
-  } else {
-    res.render('home', { error: "Usuario o contraseña incorrectos" });
-  }
-});
-
+//dashboard
 app.get('/dashboard', verificarSesion, (req, res) => {
   res.render('dashboard', { usuario: req.session.usuario });
 });
 
-app.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.clearCookie('auth_cookie');
-  res.redirect('/');
-});
-
-// TUS RUTAS (PROTEGIDAS AHORA)
+// RUTAS DE LIBROS Y PRÉSTAMOS (protegidas)
 const librosRouter = require('./router/routerLibros');
 const prestamosRouter = require('./router/routerPrestamos');
 
-app.use('/libros', verificarUsuarioNormal, librosRouter);
-app.use('/prestamos', verificarUsuarioNormal, prestamosRouter);
+app.use('/libros', verificarSesion, librosRouter);
+app.use('/prestamos', verificarSesion, prestamosRouter);
 
-// RUTAS ADMIN CON DATOS REALES
-app.get('/admin/usuarios', verificarAdmin, (req, res) => {
-  res.render('admin/usuarios', { 
-    usuario: req.session.usuario,
-    usuarios: usuarios
-  });
-});
+// RUTAS DE ADMINISTRACIÓN
+const usuariosRouter = require('./router/routerUsuarios');
+app.use('/admin/usuarios', usuariosRouter);
 
+// REPORTES (solo admin)
 app.get('/admin/reportes', verificarAdmin, async (req, res) => {
   try {
     const Libro = require('./models/modelLibro');
     const Prestamo = require('./models/modelPrestamo');
+    const Usuario = require('./models/modelUsuario');
     
-    const totalLibros = await Libro.countDocuments();
+    const totalLibros = await Libro.countDocuments({ agotado: false });
     const totalPrestamos = await Prestamo.countDocuments();
     const prestamosActivos = await Prestamo.countDocuments({ devuelto: false });
-    const librosDisponibles = await Libro.countDocuments({ disponible: true });
+    const librosDisponibles = await Libro.countDocuments({ 
+      cantidadDisponible: { $gt: 0 },
+      agotado: false 
+    });
+    const totalUsuarios = await Usuario.countDocuments({ activo: true });
     
     res.render('admin/reportes', { 
       usuario: req.session.usuario,
       stats: {
-        totalLibros: totalLibros || 0,
-        totalPrestamos: totalPrestamos || 0,
-        prestamosActivos: prestamosActivos || 0,
-        librosDisponibles: librosDisponibles || 0,
-        totalUsuarios: usuarios.length
+        totalLibros,
+        totalPrestamos,
+        prestamosActivos,
+        librosDisponibles,
+        totalUsuarios
       }
     });
   } catch (error) {
@@ -142,22 +108,17 @@ app.get('/admin/reportes', verificarAdmin, async (req, res) => {
         totalPrestamos: 0,
         prestamosActivos: 0,
         librosDisponibles: 0,
-        totalUsuarios: usuarios.length
+        totalUsuarios: 0
       }
     });
   }
 });
 
+//config (solo admin)
 app.get('/admin/configuracion', verificarAdmin, async (req, res) => {
   try {
     const Configuracion = require('./models/modelConfiguracion');
     let config = await Configuracion.findOne();
-    
-    // Si no existe configuración, crear una por defecto
-    if (!config) {
-      config = new Configuracion({ diasMaxPrestamo: 15 });
-      await config.save();
-    }
     
     res.render('admin/configuracion', { 
       usuario: req.session.usuario,
@@ -187,7 +148,7 @@ app.post('/admin/configuracion', verificarAdmin, async (req, res) => {
       await config.save();
     }
     
-    console.log(`✅ Configuración actualizada: Días máximos de préstamo = ${diasMaxPrestamo}`);
+    console.log(`Configuración actualizada: Días máximos de préstamo = ${diasMaxPrestamo}`);
     res.redirect('/admin/configuracion');
   } catch (error) {
     console.error('Error al guardar configuración:', error);
@@ -195,7 +156,12 @@ app.post('/admin/configuracion', verificarAdmin, async (req, res) => {
   }
 });
 
+// Vista de error
+app.get('/error', (req, res) => {
+  res.render('error', { mensaje: 'Ha ocurrido un error', usuario: req.session.usuario });
+});
+
 // Iniciar servidor
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

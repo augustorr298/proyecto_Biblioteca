@@ -5,7 +5,7 @@
 </div>
 
 <div class="form-contenedor">
-  <form action="/libros" method="POST">
+  <form action="/libros" method="POST" enctype="multipart/form-data">
     <div class="form-group">
       <label>Título:</label>
       <input type="text" name="titulo" required placeholder="Ej: Cien años de soledad">
@@ -29,13 +29,27 @@
         <option value="Terror">Terror</option>
         <option value="Biografía">Biografía</option>
         <option value="Historia">Historia</option>
+        <option value="Educación">Educación</option>
+        <option value="Técnico">Técnico</option>
         <option value="Otro">Otro</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label>Año:</label>
-      <input type="number" name="anio" required min="1000" max="2025" placeholder="Ej: 2020">
+      <label>Año de Publicación:</label>
+      <input type="number" name="anio" required max="2030" placeholder="Ej: 2020">
+    </div>
+
+    <div class="form-group">
+      <label>Cantidad Total de Ejemplares:</label>
+      <input type="number" name="cantidadTotal" required min="1" value="1" placeholder="Ej: 5">
+      <small>Esta cantidad también será la cantidad disponible inicial.</small>
+    </div>
+
+    <div class="form-group">
+      <label>Imagen del Libro (opcional):</label>
+      <input type="file" name="imagen" accept="image/*" class="form-control">
+      <small>Formatos permitidos: JPG, PNG, GIF, WebP. Máximo 5MB.</small>
     </div>
 
     <div class="form-actions">

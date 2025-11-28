@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Sistema de Biblioteca</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <main class="login-main">
+            <div class="hero">
+                <h2>📚 Sistema de Biblioteca</h2>
+                <p>Crea tu cuenta</p>
+                
+                <% if (error) { %>
+                    <div class="alert-error">
+                        ❌ <%= error %>
+                    </div>
+                <% } %>
+                
+                <% if (success) { %>
+                    <div class="alert-success">
+                        ✅ <%= success %>
+                    </div>
+                <% } %>
+                
+                <form action="/registro" method="POST" class="form-contenedor" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Nombre de Usuario</label>
+                        <input type="text" name="username" placeholder="Ej: juanperez" required minlength="3">
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" name="password" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Confirmar Contraseña</label>
+                        <input type="password" name="confirmPassword" placeholder="Repite tu contraseña" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Foto de Perfil (opcional)</label>
+                        <input type="file" name="fotoPerfil" accept="image/*" class="form-control">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-login">
+                        Crear Cuenta
+                    </button>
+                </form>
+                
+                <div class="card login-info" style="margin-top: 20px;">
+                    <p>Si ya estás registrado<a href="/login" class="btn btn-secondary">Iniciar Sesión</a></p>
+                </div>
+                
+        
+            </div>
+        </main>
+        
+        <footer>
+            <p>Sistema de Biblioteca</p>
+        </footer>
+    </div>
+</body>
+</html>

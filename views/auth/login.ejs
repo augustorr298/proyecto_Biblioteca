@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Biblioteca</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <div class="container">
+        <main class="login-main">
+            <div class="hero">
+                <h2>📚 Sistema de Biblioteca</h2>
+                <p>Inicia sesión para continuar</p>
+                
+                <% if (error) { %>
+                    <div class="alert-error">
+                        ❌ <%= error %>
+                    </div>
+                <% } %>
+                
+                <% if (success) { %>
+                    <div class="alert-success">
+                        ✅ <%= success %>
+                    </div>
+                <% } %>
+                
+                <form action="/login" method="POST" class="form-contenedor">
+                    <div class="form-group">
+                        <label>Usuario</label>
+                        <input type="text" name="username" placeholder="Ingresa tu usuario" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input type="password" name="password" placeholder="Ingresa tu contraseña" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-login">
+                        Iniciar Sesión
+                    </button>
+                </form>
+                
+                <div class="card login-info" style="margin-top: 20px;">
+                    <p>¿No tienes cuenta? <a href="/registro" class="btn btn-secondary">Registrarse</a></p>
+                </div>
+                
+                <div class="card login-info" style="margin-top: 10px; background: #f8f9fa; padding: 15px;">
+                    <h4>Usuario Admin:</h4>
+                    <p><strong>Usuario:</strong> <code>admin</code></p>
+                    <p><strong>Contraseña:</strong> <code>admin123</code></p>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Sistema de Biblioteca</p>
+        </footer>
+    </div>
+</body>
+</html>

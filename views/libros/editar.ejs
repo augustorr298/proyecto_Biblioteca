@@ -5,7 +5,7 @@
 </div>
 
 <div class="form-contenedor">
-  <form action="/libros/<%= libro._id %>?_method=PUT" method="POST">
+  <form action="/libros/<%= libro._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
     <div class="form-group">
       <label>Título:</label>
       <input type="text" name="titulo" value="<%= libro.titulo %>" required>
@@ -28,13 +28,36 @@
         <option value="Terror" <%= libro.genero === 'Terror' ? 'selected' : '' %>>Terror</option>
         <option value="Biografía" <%= libro.genero === 'Biografía' ? 'selected' : '' %>>Biografía</option>
         <option value="Historia" <%= libro.genero === 'Historia' ? 'selected' : '' %>>Historia</option>
+        <option value="Educación" <%= libro.genero === 'Educación' ? 'selected' : '' %>>Educación</option>
+        <option value="Técnico" <%= libro.genero === 'Técnico' ? 'selected' : '' %>>Técnico</option>
         <option value="Otro" <%= libro.genero === 'Otro' ? 'selected' : '' %>>Otro</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label>Año:</label>
-      <input type="number" name="anio" value="<%= libro.anio %>" required min="1000" max="2025">
+      <label>Año de Publicación:</label>
+      <input type="number" name="anio" value="<%= libro.anio %>" required max="2030">
+    </div>
+
+    <div class="form-group">
+      <label>Cantidad Total de Ejemplares:</label>
+      <input type="number" name="cantidadTotal" value="<%= libro.cantidadTotal %>" required min="1">
+      <small>Disponibles actualmente: <strong><%= libro.cantidadDisponible %></strong></small>
+    </div>
+
+    <% if (libro.imagen) { %>
+    <div class="form-group">
+      <label>Imagen Actual:</label>
+      <div>
+        <img src="<%= libro.imagen %>" alt="<%= libro.titulo %>" style="max-width: 150px; max-height: 200px; border-radius: 5px;">
+      </div>
+    </div>
+    <% } %>
+
+    <div class="form-group">
+      <label>Nueva Imagen (opcional):</label>
+      <input type="file" name="imagen" accept="image/*" class="form-control">
+      <small>Sube una nueva imagen para reemplazar la actual.</small>
     </div>
 
     <div class="form-actions">

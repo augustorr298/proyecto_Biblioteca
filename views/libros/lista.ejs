@@ -2,44 +2,95 @@
 
 <div class="page-header">
   <h2>📚 Catálogo de Libros</h2>
-  <a href="/libros/nuevo" class="btn">+ Agregar Libro</a>
+  <% if (usuario && usuario.role === 'administrador') { %>
+    <a href="/libros/nuevo" class="btn">+ Agregar Libro</a>
+  <% } %>
+</div>
+
+<!-- Buscador -->
+<div class="card" style="margin-bottom: 20px;">
+  <form action="/libros" method="GET" class="search-form">
+    <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 0;">
+      <input type="text" name="buscar" placeholder="Buscar por título..." 
+             value="<%= buscar %>" class="form-control" style="flex: 1;">
+      <button type="submit" class="btn">🔍 Buscar</button>
+      <% if (buscar) { %>
+        <a href="/libros" class="btn btn-secondary">Limpiar</a>
+      <% } %>
+    </div>
+  </form>
 </div>
 
 <% if (libros.length === 0) { %>
-  <p class="empty-message">No hay libros registrados. ¡Agrega uno!</p>
+  <p class="empty-message">
+    <% if (buscar) { %>
+      No se encontraron libros con el título "<%= buscar %>".
+    <% } else { %>
+      No hay libros registrados. 
+      <% if (usuario && usuario.role === 'administrador') { %>
+        ¡Agrega uno!
+      <% } %>
+    <% } %>
+  </p>
 <% } else { %>
   <div class="tabla-contenedor">
     <table>
       <thead>
         <tr>
+          <th>Portada</th>
           <th>Título</th>
           <th>Autor</th>
           <th>Género</th>
           <th>Año</th>
+          <th>Total</th>
+          <th>Disponibles</th>
           <th>Estado</th>
-          <th>Acciones</th>
+          <% if (usuario && usuario.role === 'administrador') { %>
+            <th>Acciones</th>
+          <% } %>
         </tr>
       </thead>
       <tbody>
         <% libros.forEach(libro => { %>
-        <tr>
+        <tr class="<%= libro.agotado ? 'fila-agotado' : '' %>">
+          <td style="width: 60px; text-align: center;">
+            <% if (libro.imagen) { %>
+              <img src="<%= libro.imagen %>" alt="<%= libro.titulo %>" style="width: 45px; height: 60px; object-fit: cover; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);">
+            <% } else { %>
+              <div style="width: 45px; height: 60px; background: #e0e0e0; border-radius: 3px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                📖
+              </div>
+            <% } %>
+          </td>
           <td><strong><%= libro.titulo %></strong></td>
           <td><%= libro.autor %></td>
           <td><%= libro.genero %></td>
           <td><%= libro.anio %></td>
+          <td><%= libro.cantidadTotal %></td>
+          <td><%= libro.cantidadDisponible %></td>
           <td>
-            <% if (libro.disponible) { %>
+            <% if (libro.agotado) { %>
+              <span class="badge agotado">Agotado</span>
+            <% } else if (libro.cantidadDisponible > 0) { %>
               <span class="badge disponible">Disponible</span>
             <% } else { %>
-              <span class="badge prestado">Prestado</span>
+              <span class="badge prestado">Sin stock</span>
             <% } %>
           </td>
+          <% if (usuario && usuario.role === 'administrador') { %>
           <td>
             <a href="/libros/<%= libro._id %>/editar" class="btn-small">Editar</a>
-            <form action="/libros/<%= libro._id %>?_method=DELETE" method="POST" style="display: inline;">
-              <button type="submit" class="btn-small btn-danger" onclick="return confirm('¿Eliminar este libro?')">Eliminar</button>
-            </form>
+            <% if (libro.agotado) { %>
+              <form action="/libros/<%= libro._id %>/reactivar" method="POST" style="display: inline;">
+                <button type="submit" class="btn-small btn-success" onclick="return confirm('¿Reactivar este libro?')">Reactivar</button>
+              </form>
+            <% } else { %>
+              <form action="/libros/<%= libro._id %>?_method=DELETE" method="POST" style="display: inline;">
+                <button type="submit" class="btn-small btn-danger" onclick="return confirm('¿Marcar este libro como agotado?')">Agotar</button>
+              </form>
+            <% } %>
           </td>
+          <% } %>
         </tr>
         <% }); %>
       </tbody>

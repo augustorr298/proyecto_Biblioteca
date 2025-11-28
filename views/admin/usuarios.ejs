@@ -1,64 +1,78 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin - Usuarios</title>
-    <link rel="stylesheet" href="/css/estilos.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>📚 Sistema de Biblioteca</h1>
-            <nav>
-                <a href="/dashboard">Dashboard</a>
-                <a href="/libros">Libros</a>
-                <a href="/prestamos">Préstamos</a>
-                <a href="/admin/usuarios">Usuarios</a>
-                <a href="/admin/reportes">Reportes</a>
-                <a href="/logout">Cerrar Sesión</a>
-            </nav>
-        </header>
+<%- include('../Parcial/header') %>
 
-        <main>
-            <div class="page-header">
-                <h2>Gestión de Usuarios</h2>
-                <div>
-                    <span class="badge disponible">Admin: <%= usuario.username %></span>
-                </div>
-            </div>
+<div class="page-header">
+  <h2>👥 Gestión de Usuarios</h2>
+</div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Usuario</th>
-                        <th>Rol</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>admin</td>
-                        <td>Administrador</td>
-                        <td>
-                            <button class="btn-small">Editar</button>
-                            <button class="btn-small btn-danger">Eliminar</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>usuario</td>
-                        <td>Normal</td>
-                        <td>
-                            <button class="btn-small">Editar</button>
-                            <button class="btn-small btn-danger">Eliminar</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </main>
+<% if (usuarios.length === 0) { %>
+  <p class="empty-message">No hay usuarios registrados.</p>
+<% } else { %>
+  <div class="tabla-contenedor">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Fecha Registro</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% usuarios.forEach(u => { %>
+        <tr class="<%= !u.activo ? 'fila-inactivo' : '' %>">
+          <td><strong>@<%= u.username %></strong></td>
+          <td>
+            <% if (u.role === 'administrador') { %>
+              <span class="badge disponible">Administrador</span>
+            <% } else { %>
+              <span class="badge prestado">Usuario</span>
+            <% } %>
+          </td>
+          <td>
+            <% if (u.activo) { %>
+              <span class="badge disponible">Activo</span>
+            <% } else { %>
+              <span class="badge agotado">Inactivo</span>
+            <% } %>
+          </td>
+          <td><%= new Date(u.fechaRegistro).toLocaleDateString('es-MX') %></td>
+          <td>
+            <% if (u._id.toString() !== usuario.id.toString()) { %>
+              <% if (u.role === 'usuario') { %>
+                <form action="/admin/usuarios/<%= u._id %>/hacerAdmin" method="POST" style="display: inline;">
+                  <button type="submit" class="btn-small btn-success" onclick="return confirm('¿Hacer administrador a <%= u.username %>?')">
+                    Hacer Admin
+                  </button>
+                </form>
+              <% } else { %>
+                <form action="/admin/usuarios/<%= u._id %>/hacerUsuario" method="POST" style="display: inline;">
+                  <button type="submit" class="btn-small btn-warning" onclick="return confirm('¿Quitar rol de admin a <%= u.username %>?')">
+                    Quitar Admin
+                  </button>
+                </form>
+              <% } %>
+              
+              <form action="/admin/usuarios/<%= u._id %>/toggleActivo" method="POST" style="display: inline;">
+                <% if (u.activo) { %>
+                  <button type="submit" class="btn-small btn-danger" onclick="return confirm('¿Desactivar a <%= u.username %>?')">
+                    Desactivar
+                  </button>
+                <% } else { %>
+                  <button type="submit" class="btn-small btn-success" onclick="return confirm('¿Activar a <%= u.username %>?')">
+                    Activar
+                  </button>
+                <% } %>
+              </form>
+            <% } else { %>
+              <span class="badge">Tu cuenta</span>
+            <% } %>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
 
-        <footer>
-            <p>Sistema de Biblioteca © 2024</p>
-        </footer>
-    </div>
-</body>
-</html>
+<%- include('../Parcial/footer') %>

@@ -11,9 +11,21 @@
     <div class="container">
       <h1>📚 Biblioteca</h1>
       <nav>
-        <a href="/">Inicio</a>
+        <a href="/dashboard">Inicio</a>
         <a href="/libros">Libros</a>
         <a href="/prestamos">Préstamos</a>
+        <% if (typeof usuario !== 'undefined' && usuario && usuario.role === 'administrador') { %>
+          <a href="/admin/usuarios">Usuarios</a>
+          <a href="/admin/reportes">Reportes</a>
+          <a href="/admin/configuracion">Configuración</a>
+        <% } %>
+        <% if (typeof usuario !== 'undefined' && usuario) { %>
+          <span class="nav-user">
+            👤 <%= usuario.nombre || usuario.username %> 
+            (<%= usuario.role === 'administrador' ? 'Admin' : 'Usuario' %>)
+          </span>
+          <a href="/logout" class="btn-logout">Salir</a>
+        <% } %>
       </nav>
     </div>
   </header>

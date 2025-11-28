@@ -6,30 +6,51 @@
 
 <div class="form-contenedor">
   <% if (libros.length === 0) { %>
-    <p class="empty-message">No hay libros disponibles para préstamo.</p>
-    <a href="/libros/nuevo" class="btn">Agregar Libro</a>
+    <div class="card" style="background: #fff3cd; padding: 20px; text-align: center;">
+      <p class="empty-message">No hay libros disponibles para préstamo.</p>
+      <p>Todos los libros están prestados o agotados.</p>
+      <a href="/libros/nuevo" class="btn">Agregar Nuevo Libro</a>
+    </div>
+  <% } else if (usuarios.length === 0) { %>
+    <div class="card" style="background: #fff3cd; padding: 20px; text-align: center;">
+      <p class="empty-message">No hay usuarios registrados.</p>
+      <p>Se necesitan usuarios para realizar préstamos.</p>
+    </div>
   <% } else { %>
     <form action="/prestamos" method="POST">
       <div class="form-group">
         <label>Libro:</label>
         <select name="libroId" required>
-          <option value="">Selecciona un libro</option>
+          <option value="">Selecciona un libro disponible</option>
           <% libros.forEach(libro => { %>
-            <option value="<%= libro._id %>"><%= libro.titulo %> - <%= libro.autor %></option>
+            <option value="<%= libro._id %>">
+              <%= libro.titulo %> - <%= libro.autor %> 
+              (Disponibles: <%= libro.cantidadDisponible %>)
+            </option>
           <% }); %>
         </select>
       </div>
 
       <div class="form-group">
-        <label>Nombre del Usuario:</label>
-        <input type="text" name="nombreUsuario" required placeholder="Ej: Juan Pérez">
+        <label>Usuario:</label>
+        <select name="usuarioId" required>
+          <option value="">Selecciona un usuario</option>
+          <% usuarios.forEach(u => { %>
+            <option value="<%= u._id %>">
+              <%= u.nombre %> (@<%= u.username %>) 
+              <% if (u.role === 'administrador') { %> [Admin]<% } %>
+            </option>
+          <% }); %>
+        </select>
       </div>
 
       <div class="form-group">
         <label>Fecha de Devolución:</label>
         <input type="date" name="fechaDevolucion" value="<%= fechaSugerida %>" required>
-        <small>Fecha sugerida: <%= diasMaxPrestamo %> días desde hoy</small>
+        <small>Fecha sugerida: <%= diasMaxPrestamo %> días desde hoy (según configuración)</small>
       </div>
+
+    
 
       <div class="form-actions">
         <button type="submit" class="btn">Registrar Préstamo</button>
