@@ -20,10 +20,10 @@
           <a href="/admin/configuracion">Configuración</a>
         <% } %>
         <% if (typeof usuario !== 'undefined' && usuario) { %>
-          <span class="nav-user">
+          <a href="/perfil" class="nav-user">
             👤 <%= usuario.nombre || usuario.username %> 
             (<%= usuario.role === 'administrador' ? 'Admin' : 'Usuario' %>)
-          </span>
+          </a>
           <a href="/logout" class="btn-logout">Salir</a>
         <% } %>
       </nav>

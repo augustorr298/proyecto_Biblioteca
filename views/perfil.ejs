@@ -1,0 +1,77 @@
+<%- include('Parcial/header') %>
+
+<div class="page-header">
+  <h2>👤 Mi Perfil</h2>
+</div>
+
+<div class="form-contenedor" style="max-width: 500px; margin: 0 auto;">
+  
+  <!-- Foto de perfil actual -->
+  <div style="text-align: center; margin-bottom: 30px;">
+    <% if (usuario.fotoPerfil) { %>
+      <img src="<%= usuario.fotoPerfil %>" alt="Foto de <%= usuario.username %>" 
+           style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #4f46e5; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+    <% } else { %>
+      <div style="width: 150px; height: 150px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #888; border: 4px dashed #ccc; margin: 0 auto;">
+        (sin foto)
+      </div>
+    <% } %>
+    <h3 style="margin-top: 15px;"><%= usuario.username %></h3>
+    <span class="badge <%= usuario.role === 'administrador' ? 'disponible' : 'prestado' %>">
+      <%= usuario.role === 'administrador' ? 'Administrador' : 'Usuario' %>
+    </span>
+  </div>
+
+  <!-- Cambiar foto de perfil -->
+  <div class="card" style="padding: 20px; margin-bottom: 20px;">
+    <h4>Cambiar foto de perfil</h4>
+    <form action="/perfil/foto" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <input type="file" name="fotoPerfil" accept="image/*" class="form-control" required>
+        <small>Máximo 2MB.</small>
+      </div>
+      <button type="submit" class="btn">Subir nueva foto</button>
+    </form>
+    
+    <% if (usuario.fotoPerfil) { %>
+      <hr style="margin: 15px 0;">
+      <form action="/perfil/foto/eliminar" method="POST" style="display: inline;">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('¿Eliminar tu foto de perfil?')">
+          Eliminar foto de perfil
+        </button>
+      </form>
+    <% } %>
+  </div>
+
+  <!-- Cambiar contraseña -->
+  <div class="card" style="padding: 20px; margin-bottom: 20px;">
+    <h4>Cambiar contraseña</h4>
+    <form action="/perfil/password" method="POST">
+      <div class="form-group">
+        <label>Contraseña Actual:</label>
+        <input type="password" name="passwordActual" required>
+      </div>
+      <div class="form-group">
+        <label>Nueva Contraseña:</label>
+        <input type="password" name="passwordNueva" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label>Confirmar Nueva Contraseña:</label>
+        <input type="password" name="passwordConfirmar" required minlength="6">
+      </div>
+      <button type="submit" class="btn">Cambiar Contraseña</button>
+    </form>
+  </div>
+
+  <% if (mensaje) { %>
+    <div class="alert-<%= tipoMensaje || 'success' %>" style="margin-top: 15px;">
+      <%= tipoMensaje === 'error' ? '❌' : '✅' %> <%= mensaje %>
+    </div>
+  <% } %>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="/dashboard" class="btn btn-secondary">Regresar</a>
+  </div>
+</div>
+
+<%- include('Parcial/footer') %>

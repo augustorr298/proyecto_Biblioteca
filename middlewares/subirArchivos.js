@@ -1,10 +1,22 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+
+// Asegurar que los directorios existan
+const dirLibros = './public/uploads/libros';
+const dirPerfiles = './public/uploads/perfiles';
+
+if (!fs.existsSync(dirLibros)) {
+  fs.mkdirSync(dirLibros, { recursive: true });
+}
+if (!fs.existsSync(dirPerfiles)) {
+  fs.mkdirSync(dirPerfiles, { recursive: true });
+}
 
 // Configuración para subir portadas de libros
 const storageLibros = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, './public/uploads/libros');
+    cb(null, dirLibros);
   },
   filename: function(req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);
@@ -14,7 +26,7 @@ const storageLibros = multer.diskStorage({
 // Configuración para subir fotos de perfil
 const storagePerfiles = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, './public/uploads/perfiles');
+    cb(null, dirPerfiles);
   },
   filename: function(req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname);

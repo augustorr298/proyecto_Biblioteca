@@ -64,6 +64,12 @@
                   </button>
                 <% } %>
               </form>
+              
+              <form action="/admin/usuarios/<%= u._id %>/eliminar" method="POST" style="display: inline;">
+                <button type="submit" class="btn-small btn-danger" onclick="return confirm('⚠️ ¿ELIMINAR PERMANENTEMENTE a <%= u.username %>? Esta acción no se puede deshacer.')">
+                  🗑️ Eliminar
+                </button>
+              </form>
             <% } else { %>
               <span class="badge">Tu cuenta</span>
             <% } %>
